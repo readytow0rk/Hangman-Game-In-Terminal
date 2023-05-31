@@ -1,3 +1,17 @@
+"""
+Project 3 for Code Istitute
+"""
+import random
+import os
+from colorama import Fore
+import words
+from hangman import hangman_lives
+
+
+MOVIES_THEME = words.movies_words
+CARS_THEME = words.cars_words
+ANIMALS_THEME = words.animals_words
+
 
 def clear_terminal():
     """
@@ -56,6 +70,7 @@ def rules():
         """)
     input(Fore.GREEN + ' ' * 12 + 'Press enter to return to the main menu\n')
     welcome()
+
 
 def set_theme():
     """
@@ -177,3 +192,38 @@ def restart(guessed, word):
         print(' ' * 20 + 'You run out of lives. The word was: ' + word)
         print('\n')
         again()
+
+
+def again():
+    """
+    function to start the game again or back to the main menu
+    """
+    while True:
+        user_input = input(Fore.WHITE + ' ' * 30 + 'Play again? Y/N').upper()
+        print('\n')
+        if user_input == 'Y':
+            start()
+        elif user_input == 'N':
+            welcome()
+        else:
+            print('Please select Y or N'.center(80))
+
+
+def start():
+    """
+    function to start the game
+    """
+    clear_terminal()
+    lives_qv = set_theme()
+    get_random = random_word(lives_qv)
+    game(get_random, lives_qv)
+
+
+def main_menu():
+    """
+    function to display main menu
+    """
+    welcome()
+
+
+main_menu()
