@@ -56,3 +56,124 @@ def rules():
         """)
     input(Fore.GREEN + ' ' * 12 + 'Press enter to return to the main menu\n')
     welcome()
+
+def set_theme():
+    """
+    function to set the theme of the word
+    """
+    print('\n')
+    print(Fore.WHITE + 'Please select M for movies theme (7 lives)'.center(80))
+    print(Fore.WHITE + 'C for cars theme (6 lives), '.center(80))
+    print(Fore.WHITE + 'A for animals theme (5 lives)'.center(80))
+    theme = False
+    lives = ""
+    while not theme:
+        theme_level = input(' '.center(40)).upper()
+        if theme_level == 'M':
+            theme = True
+            lives = 7
+        elif theme_level == 'C':
+            theme = True
+            lives = 6
+        elif theme_level == 'A':
+            theme = True
+            lives = 5
+        else:
+            print(Fore.GREEN + 'Please select M, C or A'.center(80))
+    return lives
+
+
+def random_word(lives):
+    """
+    function to set the random word depending on user theme
+    """
+    get_words = ""
+    if lives == 7:
+        get_words = random.choice(MOVIES_THEME).upper()
+    elif lives == 6:
+        get_words = random.choice(CARS_THEME).upper()
+    elif lives == 5:
+        get_words = random.choice(ANIMALS_THEME).upper()
+    return get_words
+
+
+def game(word, lives_qv):
+    """
+    function to set the theme of the game and start
+    """
+    clear_terminal()
+    blanks = '_' * len(word)
+    guessed = False
+    guessed_letters = []
+    guessed_word = []
+    print(Fore.WHITE + hangman_lives(lives_qv))
+    print(Fore.GREEN + " ".join(blanks).center(76))
+    print('\n')
+    while not guessed and lives_qv > 0:
+        print(Fore.WHITE + f"Lives: {lives_qv}".center(76))
+        user_guess = input(' ' * 25 + 'Please guess a letter: ').upper()
+        if len(user_guess) == 1 and user_guess.isalpha():
+            if user_guess in guessed_letters:
+                clear_terminal()
+                print(' ' * 25 + 'You already guessed ' + user_guess)
+            elif user_guess not in word:
+                clear_terminal()
+                print(' ' * 25 + user_guess + ' is not in the word')
+                lives_qv -= 1
+                guessed_letters.append(user_guess)
+            else:
+                clear_terminal()
+                print(' ' * 30 + user_guess + ' is in the word')
+                guessed_letters.append(user_guess)
+                word_li = list(blanks)
+                indices = [i for (i, letter) in enumerate(word)
+                           if letter == user_guess]
+                for index in indices:
+                    word_li[index] = user_guess
+                blanks = ''.join(word_li)
+                if '_' not in blanks:
+                    guessed = True
+        elif len(user_guess) == len(word) and user_guess.isalpha():
+            if user_guess in guessed_word:
+                clear_terminal()
+                print(' ' * 30 + 'You guessed the word ' + user_guess)
+            elif user_guess != word:
+                clear_terminal()
+                print(' ' * 30 + user_guess + 'is not in the word')
+                lives_qv -= 1
+                guessed_word.append(user_guess)
+            else:
+                guessed = True
+                blanks = word
+        else:
+            clear_terminal()
+            print(Fore.RED + 'Not valid'.center(80))
+        print(Fore.WHITE + hangman_lives(lives_qv))
+        print(Fore.GREEN + " ".join(blanks).center(76))
+        print('\n')
+    restart(guessed, word)
+
+
+def restart(guessed, word):
+    """
+    function display results when user guessed the word or lost his lives
+    """
+    if guessed:
+        clear_terminal()
+        print()
+        print(Fore.GREEN + 'You guessed the word'.center(80))
+        print('\n')
+        again()
+    else:
+        clear_terminal()
+        print(Fore.WHITE + """
+         ██████╗  █████╗ ███╗   ███╗███████╗  ██████╗ ██╗   ██╗███████╗██████╗
+         ██╔════╝ ██╔══██╗████╗ ████║██╔════╝ ██╔═══██╗██║  ██║██╔════╝██╔══██╗
+         ██║  ███╗███████║██╔████╔██║█████╗   ██║   ██║██║  ██║█████╗  ██████╔╝
+         ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝   ██║   ██║╚██╗ ██╔╝██╔══╝ ██╔══██╗
+         ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗ ╚██████╔╝ ╚████╔╝ ██████╗██║  ██║
+         ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝   ╚═════╝   ╚═══╝  ╚═════╝╚═╝  ╚═╝
+        """)
+        print(' ' * 20 + 'You run out of lives. The word was: ' + word)
+        print('\n')
+        again()
